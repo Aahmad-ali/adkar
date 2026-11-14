@@ -146,7 +146,7 @@ function hap(n){try{if(navigator.vibrate){navigator.vibrate(n===1?20:n===2?[40,7
  try{var l=document.getElementById('hl');if(!l){l=document.createElement('label');l.id='hl';l.setAttribute('aria-hidden','true');l.style.cssText='position:fixed;left:-99px;top:-99px;opacity:0;pointer-events:none';var i=document.createElement('input');i.type='checkbox';i.setAttribute('switch','');l.appendChild(i);document.body.appendChild(l)}
  for(var k=0;k<(n===1?1:n===2?2:3);k++)if(k)setTimeout(function(){l.click()},k*150);else l.click()}catch(e){}}
 function curSl(){var car=document.getElementById('car');if(!car)return null;var m=car.getBoundingClientRect(),best=null,bd=1e9;[].forEach.call(car.children,function(s){var r=s.getBoundingClientRect(),dd=Math.abs(r.left+r.width/2-(m.left+m.width/2));if(dd<bd){bd=dd;best=s}});return best}
-function tapCard(c){var p=RT[S.r],id=c.dataset.c,d=IT.filter(function(x){return x.id===id})[0];if(!d)return;var q=rem(d,p);if(q<=0)return;RC[p][id]=q-1;saveC(p);var b=c.querySelector('.sh');if(b){b.textContent=q-1<=0?'✓':q-1;b.classList.toggle('dn',q-1<=0)}if(q>1)hap(1);if(q-1===0){hap(3);flash();c.classList.add('fl');setTimeout(function(){c.classList.remove('fl')},800);var nx=c.parentNode.nextElementSibling;if(nx){toast('✓ تم — الذكر التالي');setTimeout(function(){var cr=document.getElementById('car'),a=cr.getBoundingClientRect(),b2=nx.getBoundingClientRect();cr.scrollBy({left:(b2.left+b2.width/2)-(a.left+a.width/2),behavior:'smooth'})},350)}else toast('تقبّل الله 🤲')}}
+function tapCard(c){var p=RT[S.r],id=c.dataset.c,d=IT.filter(function(x){return x.id===id})[0];if(!d)return;var q=rem(d,p);if(q<=0)return;RC[p][id]=q-1;saveC(p);setLast(id);var b=c.querySelector('.sh');if(b){b.textContent=q-1<=0?'✓':q-1;b.classList.toggle('dn',q-1<=0)}if(q>1)hap(1);if(q-1===0){hap(3);flash();c.classList.add('fl');setTimeout(function(){c.classList.remove('fl')},800);var nx=c.parentNode.nextElementSibling;if(nx){toast('✓ تم — الذكر التالي');setTimeout(function(){var cr=document.getElementById('car'),a=cr.getBoundingClientRect(),b2=nx.getBoundingClientRect();cr.scrollBy({left:(b2.left+b2.width/2)-(a.left+a.width/2),behavior:'smooth'})},350)}else toast('تقبّل الله 🤲')}}
 (function(){var sx=0,sy=0,st=0,ok=false;
 document.addEventListener('pointerdown',function(e){ok=!!(S.d&&RT[S.r]&&S.r!=='manage')&&!e.target.closest('button,a,input,textarea,select,label,[data-back]');sx=e.clientX;sy=e.clientY;st=Date.now()},{passive:true});
 document.addEventListener('pointerup',function(e){if(!ok)return;ok=false;if(Math.abs(e.clientX-sx)>12||Math.abs(e.clientY-sy)>12||Date.now()-st>600)return;var sl=curSl();if(sl){var c=sl.querySelector('.sc');if(c)tapCard(c)}},{passive:true});
@@ -162,6 +162,7 @@ document.addEventListener('visibilitychange',function(){if(document.visibilitySt
 document.addEventListener('click',wlAcq,{passive:true});document.addEventListener('touchend',wlAcq,{passive:true});
 wlAcq();
 var BI=false;
+function setLast(id){try{localStorage.setItem('my-adhkar-last',JSON.stringify({d:new Date().toDateString(),id:id}))}catch(e){}}
 function toast(m){var e=document.createElement('div');e.className='ts';e.textContent=m;document.body.appendChild(e);setTimeout(function(){e.remove()},1600)}
 function det(){var p=RT[S.r],v=vis(p);
  var sl=v.map(function(d){var r=rem(d,p),nt=d.f||autoNote(d);
@@ -198,7 +199,7 @@ app.addEventListener("click",function(e){
   else if(D.vt){hap(3);document.getElementById('vm').textContent=navigator.vibrate?'جهازك يدعم الاهتزاز البرمجي. هل اهتز؟':'هذا الجهاز لا يدعم الاهتزاز البرمجي، فجرّبتُ الاهتزاز اللمسي الخاص بالآيفون (iOS 17.4 فأحدث). هل شعرتَ بنبضات؟'}
   else if(D.mode){MODE=pm()==="m"?"e":"m";render();window.scrollTo(0,0)}
   else if(D.theme){var r=document.documentElement,dk=getComputedStyle(r).getPropertyValue("--bg").trim()==="#1e2336";r.setAttribute("data-theme",dk?"light":"dark")}
-  else if(D.tap){var c=t.closest('.sc'),id=c.dataset.c,d=IT.filter(function(x){return x.id===id})[0],q=rem(d,p);if(q>0){RC[p][id]=q-1;saveC(p);if(q>1)hap(1);t.textContent=q-1<=0?'✓':q-1;t.classList.toggle('dn',q-1<=0);if(q-1===0){hap(3);flash();c.classList.add('fl');setTimeout(function(){c.classList.remove('fl')},800);var nx=c.parentNode.nextElementSibling;if(nx)toast('✓ تم — الذكر التالي');if(nx)setTimeout(function(){var cr=document.getElementById('car'),a=cr.getBoundingClientRect(),b=nx.getBoundingClientRect();cr.scrollBy({left:(b.left+b.width/2)-(a.left+a.width/2),behavior:'smooth'})},350);else toast('تقبّل الله 🤲')}}}
+  else if(D.tap){var c=t.closest('.sc'),id=c.dataset.c,d=IT.filter(function(x){return x.id===id})[0],q=rem(d,p);if(q>0){RC[p][id]=q-1;saveC(p);setLast(id);if(q>1)hap(1);t.textContent=q-1<=0?'✓':q-1;t.classList.toggle('dn',q-1<=0);if(q-1===0){hap(3);flash();c.classList.add('fl');setTimeout(function(){c.classList.remove('fl')},800);var nx=c.parentNode.nextElementSibling;if(nx)toast('✓ تم — الذكر التالي');if(nx)setTimeout(function(){var cr=document.getElementById('car'),a=cr.getBoundingClientRect(),b=nx.getBoundingClientRect();cr.scrollBy({left:(b.left+b.width/2)-(a.left+a.width/2),behavior:'smooth'})},350);else toast('تقبّل الله 🤲')}}}
   else if(D.speak){var c2=t.closest('.sc'),d2=IT.filter(function(x){return x.id===c2.dataset.c})[0];try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(d2.x);u.lang='ar-SA';u.rate=.85;speechSynthesis.speak(u)}catch(x){}}
   else if(D.share){var c3=t.closest('.sc'),d3=IT.filter(function(x){return x.id===c3.dataset.c})[0],tx=d3.x+'\n\n— أذكاري';var cp=function(){try{navigator.clipboard.writeText(tx).then(function(){toast('تم النسخ')})}catch(x){}};if(navigator.share){navigator.share({text:tx}).catch(cp)}else cp()}
   else if(D.nav){var v=vis(p),i=v.findIndex(function(x){return x.id===S.d})+(+D.nav);if(v[i]){S.d=v[i].id;render();window.scrollTo(0,0)}}
@@ -221,6 +222,7 @@ app.addEventListener("click",function(e){
   }
 });
 window.addEventListener("hashchange",function(){var h=location.hash.slice(1);if(h!==S.r&&(h==="home"||h==="manage"||RT[h])){S.r=h;S.d=null;render()}});
+try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('my-adhkar-c-')===0||k==='my-adhkar-last')localStorage.removeItem(k)})}catch(e){}
 loadItems();loadC();
 (function(){var h=location.hash.slice(1);S.r=(h==="manage"||RT[h])?h:"morning"})();
 render();
